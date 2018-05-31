@@ -6,7 +6,7 @@ El dataset se obtuvo [aquí](https://www.kaggle.com/aparnashastry/building-permi
 
 Para el proceso de curación se sigió el procedimiento descripto en el *notebook* `Laboratorio Clase 4.ipynb`, el cual se puede abrir y ejecutar luego de correr el contenedor de Docker para jupyter notebook:
 
-	``` sh
+	```console
 	docker run -it --rm -v $PWD:/home/jovyan/work -e NB_UID=`id -u` -e NB_GID=`id -u` -p 8888:8888 --user root jupyter/scipy-notebook
 	```
 
