@@ -2,18 +2,19 @@
 
 Se trabajó con un dataset de Permisos de Construcción de Edificios en San Francisco (https://www.kaggle.com/aparnashastry/building-permit-applications-data/).
 
-El dataset se obtuvo [aquí](https://www.kaggle.com/aparnashastry/building-permit-applications-data/data) y se guarda localmente en `data/Building_Permits.csv`, junto con el archivo de descripción de las columnas `data/DataDictionaryBuildingPermit.xlsx`
+El dataset se obtuvo [aquí](https://www.kaggle.com/aparnashastry/building-permit-applications-data/data) y se guarda localmente en `data/Building_Permits.csv`, junto con el archivo de descripción de las columna$
 
 Para el proceso de curación se sigió el procedimiento descripto en el *notebook* `Laboratorio Clase 4.ipynb`, el cual se puede abrir y ejecutar luego de correr el contenedor de Docker para jupyter notebook:
 
-	```console
-	docker run -it --rm -v $PWD:/home/jovyan/work -e NB_UID=`id -u` -e NB_GID=`id -u` -p 8888:8888 --user root jupyter/scipy-notebook
-	```
+
+```console
+docker run -it --rm -v $PWD:/home/jovyan/work -e NB_UID=`id -u` -e NB_GID=`id -u` -p 8888:8888 --user root jupyter/scipy-notebook
+```
 
 El dataset ya procesado se encuentra en `data/Building_Permits_final.csv` y la descripción final de las variables se puede ver en la siguiente tabla:
 
 
-Variable | Descripción | Tipo 
+Variable | Descripción | Tipo
 --- |---|---
 Record_ID | Id del registro | Numeric
 Permit_Number | Numero asignado cuando se cargó la solicitud | String
@@ -47,5 +48,4 @@ Supervisor_District | Supervisor del distrito al que pertenece la ubicación del
 Neighborhoods_Analysis_Boundaries | Barrio al que pertenece la ubicación del edificio | String
 Zipcode | Código postal de la dirección del edificio | Numerc
 Location | Par de Latitud y Longitud de la ubicación | String
-
 
