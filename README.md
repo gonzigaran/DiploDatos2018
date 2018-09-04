@@ -4,12 +4,11 @@ Repositorios para los laboratorios prácticos de la Diplomatura en Ciencia de Da
 
 ## Materias:
 
-	- Análisis y Visualización de Datos
-	- Análisis Exploratorio y Curación de Datos
-	- Introducción al Aprendizaje Automático
-	- Aprendizaje Supervisado
-	- Aprendizaje No Supervisado
-	- Introducción al Aprendizaje Profundo
-	- Aprendizaje por Refuerzos: un enfoque práctico
-	- Análisis de series temporales
-
+ - [Análisis y Visualización de Datos](https://github.com/gonzigaran/DiploDatos2018/tree/master/AyV)
+ - [Análisis Exploratorio y Curación de Datos](https://github.com/gonzigaran/DiploDatos2018/tree/master/AEyCD)
+ - [Introducción al Aprendizaje Automático](https://github.com/gonzigaran/DiploDatos2018/tree/master/IAA)
+ - [Aprendizaje Supervisado](https://github.com/gonzigaran/DiploDatos2018/tree/master/AS)
+ - [Aprendizaje No Supervisado](https://github.com/gonzigaran/DiploDatos2018/tree/master/ANS)
+ - [Introducción al Aprendizaje Profundo](https://github.com/gonzigaran/DiploDatos2018/tree/master/IAP)
+ - [Aprendizaje por Refuerzos: un enfoque práctico](https://github.com/gonzigaran/DiploDatos2018/tree/master/ApR)
+ - [Análisis de series temporales](https://github.com/gonzigaran/DiploDatos2018/tree/master/AST)
