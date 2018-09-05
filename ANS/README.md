@@ -9,7 +9,7 @@
 ---
 
 ### Laboratorios:
-- [Laboratorio 1:  Clustering](#) <br/>
+- [Laboratorio 1:  Clustering](https://github.com/gonzigaran/DiploDatos2018/blob/master/ANS/lab1-clustering.ipynb) <br/>
 K-Means para clustering de textos legales.
 - [Laboratorio 2 : Sistemas de recomendación](#) <br/>
 Sistema de recomendatión basado en contenido para películas.
