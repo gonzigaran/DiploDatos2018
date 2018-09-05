@@ -4,7 +4,7 @@
 
 ---
 
-> Estudiante: Gonzalo Zigarán.
+> Estudiante: Gonzalo Zigarán. \n
 > Profesores: Laura Alonso Alemany, Marcelo Lares.
 > Repositorio de la materia: (https://github.com/DiploDatos/AprendizajeNOSupervisado)
 
