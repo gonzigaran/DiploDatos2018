@@ -11,7 +11,7 @@
 ---
 
 ### Laboratorios:
-- [Laboratorio 1:  Clustering](#)
+- [Laboratorio 1:  Clustering](#) <br/>
 K-Means para clustering de textos legales.
-- [Laboratorio 2 : Sistemas de recomendación](#)
+- [Laboratorio 2 : Sistemas de recomendación](#) <br/>
 Sistema de recomendatión basado en contenido para películas.
