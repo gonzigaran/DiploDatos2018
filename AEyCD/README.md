@@ -4,7 +4,7 @@
 
 > Estudiante: Ingrid Vanessa Daza Perilla, Gonzalo Zigarán. <br/>
 > Profesores: Mariano Javier de Leon Dominguez Romero, Edgardo Hames, Gabriel Miretti. <br/>
-> Repositorio de la materia: (https://github.com/DiploDatos/AnalisisyCuracion) <br/>
+> Repositorio de la materia: https://github.com/DiploDatos/AnalisisyCuracion <br/>
 
 ---
 

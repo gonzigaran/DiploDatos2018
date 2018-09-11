@@ -4,7 +4,7 @@
 
 > Estudiantes: Ingrid Vanessa Daza Perilla, Gonzalo Zigarán. <br/>
 > Profesores: María Soledad Palacios, Milagro Teruel. <br/>
-> Repositorio de la materia: (https://github.com/DiploDatos/AnalisisyVisualizacion) <br/>
+> Repositorio de la materia: https://github.com/DiploDatos/AnalisisyVisualizacion <br/>
 
 ---
 

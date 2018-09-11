@@ -4,7 +4,7 @@
 
 > Estudiante: Gonzalo Zigarán. <br/>
 > Profesores: Matías Marenchino, Franco Luque. <br/>
-> Repositorio de la materia: (https://github.com/DiploDatos/AprendizajeSupervisado) <br/>
+> Repositorio de la materia: https://github.com/DiploDatos/AprendizajeSupervisado <br/>
 
 ---
 

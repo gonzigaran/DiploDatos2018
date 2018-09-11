@@ -4,7 +4,7 @@
 
 > Estudiante: Gonzalo Zigarán. <br/>
 > Profesores: Jorge Sanchez. <br/>
-> Repositorio de la materia: (https://github.com/DiploDatos/IntroduccionAprendizajeAutomatico) <br/>
+> Repositorio de la materia: https://github.com/DiploDatos/IntroduccionAprendizajeAutomatico <br/>
 
 ---
 
