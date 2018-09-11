@@ -3,8 +3,8 @@
 Repositorios para los laboratorios prácticos de la Diplomatura en Ciencia de Datos, Aprendizaje Automático y sus aplicaciones, dictada por FaMAF-UNC en el año 2018.
 
 
-> Página de la diplomatura: (http://diplodatos.famaf.unc.edu.ar/) <br/>
-> Repositorio de la diplomatura: (https://github.com/DiploDatos/)  <br/>
+> Página de la diplomatura: http://diplodatos.famaf.unc.edu.ar/ <br/>
+> Repositorio de la diplomatura: https://github.com/DiploDatos/  <br/>
 
 
 ## Materias:
