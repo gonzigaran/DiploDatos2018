@@ -9,5 +9,7 @@
 ---
 
 ### Laboratorios:
-- [Laboratorio 1: ](#) <br/>
-- [Laboratorio 2 : ](#) <br/>
+- [Laboratorio 1: Conceptos básicos de aprendizaje automático](https://github.com/gonzigaran/DiploDatos2018/tree/master/IAA/lab1-conceptos_basicos.ipynb) <br/>
+Cambios en la selección de atributos, hiperparámetros, y distintos algoritmos para analizar su influencia.
+- [Laboratorio 2: Armado de un esquema de aprendizaje automático](https://github.com/gonzigaran/DiploDatos2018/tree/master/IAA/lab2-esquema.ipynb) <br/>
+Desarrollo de un esquema para hacer tareas de aprendizaje automático: selección de un modelo, ajuste de hiperparámetros y evaluación.
