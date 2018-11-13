@@ -9,7 +9,7 @@
 ---
 
 ### Laboratorios:
-- [Laboratorio 1:  ](https://github.com/gonzigaran/DiploDatos2018/tree/master/IAP/lab1) <br/>
+- [Laboratorio 1:  Modelos MLP básicos](https://github.com/gonzigaran/DiploDatos2018/tree/master/IAP/lab1) <br/>
 Análisis de datos sobre el conjunto de datos de movie reviews para la 
 clásificación binaria de las revisiones. ([consignas](https://github.com/DiploDatos/AprendizajeProfundo/blob/master/consigna_practico_1.md))
    - [Práctico 1:](https://github.com/gonzigaran/DiploDatos2018/tree/master/IAP/lab1/report-practico1.md) Preprocesamiento del texto con TfIDf para luego procesar con una 
