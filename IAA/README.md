@@ -3,7 +3,7 @@
 ###### Diplomatura en Ciencias de Datos, Aprendizaje Automático y sus aplicaciones
 
 > Estudiante: Gonzalo Zigarán. <br/>
-> Profesores: Jorge Sanchez. <br/>
+> Profesores: Jorge Sanchez, Cristián Cardellino. <br/>
 > Repositorio de la materia: https://github.com/DiploDatos/IntroduccionAprendizajeAutomatico <br/>
 
 ---
