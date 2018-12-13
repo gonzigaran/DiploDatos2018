@@ -1,0 +1,422 @@
+---
+title: "Ejercicio en clase y Práctico 2"
+author: "Ingrid Vanessa Daza Perilla y Gonzalo Zigarán"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio de algoritmo KNN  
+
+Haciendo uso del caso visto en clase pasamos a analizar como resulta el método de KNN cuando se aplica una normalización de tipo *z-score*, como éste reacciona a distintas elecciones de  K vecinos y como varia el método si se elige de manera aleatoria las muestras de validación.
+
+### Diagnosticando Cáncer:
+
+**Normalizaciń de tipo z-score**
+```{r echo=TRUE}
+data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",header=FALSE)
+data <- data[-1]
+data_escalada <- scale(data[2:31], center = TRUE, scale = TRUE)
+summary(data)
+```
+
+
+###  División de los datos en muestra de Validación, en muestra de Entrenamiento y en Variable Objetivo.
+
+- Muestra de Validación y  Muestra de entrenamiento:
+
+```{r}
+data_train <- data_escalada[1:469, ]    
+data_test  <- data_escalada[470:569, ] 
+```
+
+- Salida anotada:
+
+```{r}
+data_train_labels <- data[1:469, 1]
+data_test_labels <- data[470:569, 1]
+
+```
+
+### Ejecución del algoritmo KNN
+
+Fijamos un número de vecinos K = 21
+
+```{r}
+library(class)
+data_test_pred <- knn(train = data_train, test = data_test, cl=data_train_labels, k=21)
+```
+
+### Validación cruzada
+
+```{r}
+library(gmodels)
+CrossTable(x=data_test_labels, y=data_test_pred, prop.chisq = FALSE)
+```
+
+Podemos concluir en este paso que hemos bajado el costo computacional usando la normalización de tipo z-score a diferencia de la *minimización minmax* sin influir en un cambio en la precisión.
+
+### Distintas predicciones en función de los distintos números de K vecinos
+
+```{r}
+k <- c(1, 5, 11, 15, 21)
+fraccion_total_v  <- c()
+
+for (j in 1:5)
+{
+    data_test_pred <- knn(train = data_train, test = data_test, cl=data_train_labels,
+                          k= k[j])
+    validacion_cruzada = CrossTable(x=data_test_labels, y=data_test_pred,
+                                    prop.chisq = FALSE)
+    fraccion_total = validacion_cruzada$prop.tbl['M','M'] + 
+                     validacion_cruzada$prop.tbl['B','B']
+    
+    fraccion_total_v[j] <- fraccion_total
+}
+
+cat('La precisión correspondiente a k  = [1, 5, 11, 15, 21] es:' , fraccion_total_v, 'respectivamente')
+
+```
+
+Por lo tanto podemos concluir que con k = 11 se logra la misma aproximación que con valores de k mayores, lo que complejiza el problema.
+
+### Pacientes elegidos aleatoriamente para el conjunto de validación.
+
+Realizamos el mismo procedimiento anterior a excepción de la aleatoriedad en las muestras a usar.
+
+```{r}
+
+data <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",header=FALSE)
+data <- data[-1]
+
+###################################################################
+set.seed(8)
+ind = sample (x = nrow(data), size = nrow(data), replace = FALSE )
+data <- data[ind,]
+###################################################################
+
+data_escalada <- scale(data[2:31], center = TRUE, scale = TRUE)
+
+data_train <- data_escalada[1:469, ]    
+data_test  <- data_escalada[470:569, ] 
+
+data_train_labels <- data[1:469, 1]
+data_test_labels <- data[470:569, 1]
+
+k <- c(1, 5, 11, 15, 21)
+fraccion_total_v  <- c()
+
+for (j in 1:5)
+{
+    data_test_pred <- knn(train = data_train, test = data_test, cl=data_train_labels, k= k[j])
+    validacion_cruzada = CrossTable(x=data_test_labels, y=data_test_pred, prop.chisq = FALSE)
+    fraccion_total = validacion_cruzada$prop.tbl['M','M'] + validacion_cruzada$prop.tbl['B','B']
+    fraccion_total_v[j] <- fraccion_total
+}
+
+cat('La precisión correspondiente a k  = [1, 5, 11, 15, 21] es:' , fraccion_total_v, 'respectivamente')
+
+
+```
+
+Observamos una mejora general en el procedimiento, en comparación con no elegir aleatoriamente. Los valores parecen no seguir un patron (antes observabamos que, en general, mejoraba mientras se agrandaba el k), sino que todos tienen una buena fracción.
+
+Observamos que el valor de la semilla interfiere en la precisión del algoritmo KNN. Además el valor del número de vecinos en este caso ya no es necesariamente k = 11, se puede ahorrar costo computacional eligiendo  un k = 5, pero esto es solo por que hemos fijado el valor de la semilla igual a 8, al variar el valor de semilla se debería elegir un valor distinto del k 'optimo'.
+
+Podemos concluir que el algoritmo está sujeto a como se ejecutó la ''elección aleatoria'' de las filas del data set. Por lo tanto se debe ser conciente de este hecho en la implementación del método a la hora de fijar un criterio en la elección del K óptimo. Aunque también puede notarse que los resultados son muy buenos para cualquier valor de k al tomar las muestras de forma aleatoria.
+
+## Práctico 2 
+
+## Datos
+
+El data set a usar es una identificación de grupos compactos **GC**. Haremos uso solo de algunos *features* del dataset de entrada para la implementación de los métodos de **K-means** y **Mixture Models**.
+Las entradas son coordenadas angulares *ascensión recta* **ar** y *declinación* **dec**.
+
+
+```{r}
+library(VIM)
+read.table("2masscgs.dat") -> D
+
+GC <- D[c(2,3)]
+ra              <- GC$V2         
+dec             <- GC$V3          
+dim(GC)
+summary(GC)
+```
+
+Iniciamos con el análisis de valores perdidos en el data set y descartamos algún orden en el data set generando un nuevo data set de manera que las filas sean aleatorias.
+
+```{r}
+aggr(GC, col=c('orange','red','navyblue'), numbers=TRUE, sortVars=TRUE, 
+     cex.axis=.7, gap=3, ylab=c("Histogram #of missing data","Pattern"))
+
+set.seed(8)
+ind = sample (x = nrow(D),size = nrow(D), replace = FALSE )
+GC <- GC[ind,]
+```
+No es necesario aplicar ninguna corrección puesto que no tienen ningún valor perdido el data set. 
+La distribución de los **GC** la podemos observar en la siguiente figura donde veremos que los grupos compactos de galaxias están repartidos en tres regiones.
+
+
+```{r}
+library(SPADAR)
+createAllSkyScatterPlotChart(ra, dec, pointcol = "black",
+dataCoordSys = "equatorial", mainGrid = "equatorial", eqCol = "red", 
+eqLty = 1, eqLwd = 1,
+eqDraw = TRUE, eclDraw = FALSE, galDraq = FALSE, projname = "aitoff", projparam = NULL,
+projorient = NULL, nGridpoints = 100, addLab=TRUE, label.cex=0.6,
+main =  'Posición Proyectada de los GCs')
+```
+
+
+Dado a que la **ra** es una variable angular que toma valores desde 0° a 360°, objetos que se encuentre cerca de los 0° y 360° estarán realmente cerca en proyección, lo cual el método de k-means no lo percibe de esta manera, por esto se decidió para tener mejores particiones dividir la muestra en dos grupos. El  primer grupo abarcara todos los **GC** que están en la zona de  **ra < 180°** (GC_1) y el segundo grupo abarca los **GC** que tengan una **ra > 180°** (GC_2). 
+
+# Método K-means 
+Nosotros decidimos iniciar con el Método K-means e implementar el *Método del Codo* para elegir el número de centros *K* "optimo" para cada grupo (GC_1 y GC_2). Y en cada caso se observo como este método varia al emplear la normalización por z-score.
+
+
+- **Método del codo** 
+
+Este método utiliza los valores de la inercia obtenidos tras aplicar K-means (desde m a N Clusters), siendo la inercia la suma de las distancias al cuadrado de cada objeto del Cluster a su centroide
+$$inercia = \sum_{i = m}^{N} \Arrowvert x_{i} - \mu \Arrowvert ^{2} $$
+                                          
+Una vez obtenidos los valores de la inercia tras aplicar el K-means de m a N Clusters, representamos en una gráfica lineal la inercia respecto del número de Clusters. En esta gráfica se debería de apreciar un cambio brusco en la evolución de la inercia, teniendo la línea representada una forma similar a la de un brazo y su codo. El punto en el que se observa ese cambio brusco en la inercia nos dirá el número óptimo de Clusters a seleccionar para ese data set; o dicho de otra manera: el punto que representaría al codo del brazo será el número óptimo de Clusters para ese data set. 
+
+En particular nosotros tomamos m = 3 y N = 9.
+
+```{r}
+par(lwd=2)			
+par(mar=c(5,5,2,2))             
+par(mfrow=c(2,2))		
+par(mgp=c(3.7,1.3,0))           
+par(cex.axis=1.2,cex.lab=1.3)   
+par(family="serif")	
+
+library(VIM)
+read.table("2masscgs.dat") -> D
+GC <- D[c(2,3)]
+ra              <- GC$V2         
+dec             <- GC$V3   
+
+################################## Met.Codo GC_1 #####################################
+k <- c(3,4,5,6,7,8,9)                                                                #
+inercia_v <- c()                                                                     #
+GC_1 <- subset(GC,ra < 180)                                                          #
+                                                                                     #
+for (j in 1:7)                                                                       #
+    {                                                                                #
+    set.seed(20)                                                                     #
+    GC_1_Cluster <- kmeans(GC_1, k[j], nstart = 20)                                  #
+    inercia <- GC_1_Cluster$tot.withinss                                             #
+    inercia_v[j] <- inercia                                                          #
+    }                                                                                #
+plot(k,inercia_v, type = "l",col='midnightblue',                                     
+     main= 'Método del codo  G1')                                                    #
+points(k,inercia_v,col= 'mediumspringgreen',pch=2,lwd = 10)                          #
+                                                                                     #
+          ################# con escalado z-score ################                    #
+                                                                                     #
+k <- c(3,4,5,6,7,8,9)                                                                #
+inercia_v <- c()                                                                     #                                                                         
+GC_1_escalado <- scale(GC_1, center = TRUE, scale = TRUE)                            #
+                                                                                     #
+for (j in 1:7)                                                                       #
+    {                                                                                #
+    set.seed(20)                                                                     #
+    GC_1_Cluster_esc <- kmeans(GC_1_escalado, k[j], nstart = 20)                     #
+    inercia <- GC_1_Cluster_esc$tot.withinss                                         #
+    inercia_v[j] <- inercia                                                          #
+    }                                                                                #
+plot(k,inercia_v, type = "l",col='midnightblue',                                     #
+     main= 'Método del codo G1 con z-score')                                         
+points(k,inercia_v,col= 'mediumspringgreen',pch=2,lwd = 10)                          #
+######################################################################################                                                                                
+
+
+
+################################## Met.Codo GC_2 #####################################
+                                                                                     #
+k <- c(3,4,5,6,7,8,9)                                                                #
+inercia_v <- c()                                                                     #
+GC_2 <- subset(GC,ra > 180)                                                          #
+                                                                                     #
+                                                                                     #
+for (j in 1:7)                                                                       #
+    {                                                                                #
+    set.seed(20)                                                                     #
+    GC_2_Cluster <- kmeans(GC_2, k[j], nstart = 20)                                  #
+    inercia <- GC_2_Cluster$tot.withinss                                             #
+    inercia_v[j] <- inercia                                                          #
+    }                                                                                #
+plot(k,inercia_v, type = "l",col='firebrick',                                        #
+     main= 'Método del codo G2')                                                     #
+points(k,inercia_v,col= 'firebrick1',pch=2,lwd = 10)                                 #
+                                                                                     #
+            ################# con escalado z-score ###########################       #
+k <- c(3,4,5,6,7,8,9)                                                                #
+inercia_v <- c()                                                                     #                                                        
+                                                                                     #
+GC_2_escalado <- scale(GC_2, center = TRUE, scale = TRUE)                            #
+for (j in 1:7)                                                                       #
+    {                                                                                #
+    set.seed(20)                                                                     #
+    GC_2_Cluster_esc <- kmeans(GC_2_escalado, k[j], nstart = 20)                     #
+    inercia <- GC_2_Cluster_esc$tot.withinss                                         #
+    inercia_v[j] <- inercia                                                          #
+    }                                                                                #
+plot(k,inercia_v, type = "l",col='firebrick',                                        #
+     main= 'Método del codo G2 con z-score')                                         #
+points(k,inercia_v,col= 'firebrick1',pch=2,lwd = 10)                                 #
+######################################################################################                                                                                
+```
+
+
+
+Como se puede apreciar en los resultados obtenidos, en el conjunto de datos sin normalizar no se aprecie “el codo” a diferencia  de el conjunto de datos normalizado donde se ve claramente un cambio brusco en **k = 4** tanto para GC_1 como para GC_2. 
+
+
+Tomando **k = 4** mostramos las particiones al implementar K-means.
+
+```{r}
+
+par(lwd=2)			
+par(mar=c(5,5,2,2))             
+par(mfrow=c(2,2))		
+par(mgp=c(3.7,1.3,0))           
+par(cex.axis=1.2,cex.lab=1.3)   
+par(family="serif")	
+
+library(VIM)
+read.table("2masscgs.dat") -> D
+GC <- D[c(2,3)]
+ra              <- GC$V2         
+dec             <- GC$V3   
+
+################################## K-means GC_1 ######################################
+GC_1 <- subset(GC,ra < 180)                                                          #
+dim(GC_1)                                                                            #
+                                                                                     #
+set.seed(20)                                                                         #
+GC_1_Cluster <- kmeans(GC_1, 4, nstart = 20)                                         #
+                                                                                     #
+plot(GC_1, col = GC_1_Cluster$cluster+1, xlab='ra', ylab='dec', pch=19,              #
+     main= 'k-means G1')                                                             #
+points(GC_1_Cluster$centers, pch=8, col='deeppink', cex=2)                           #
+                                                                                     #
+         ################# con escalado z-score ###########################          #
+                                                                                     #
+GC_1_escalado <- scale(GC_1, center = TRUE, scale = TRUE)                            #
+                                                                                     #
+set.seed(20)                                                                         #
+GC_1_Cluster_esc <- kmeans(GC_1_escalado, 4, nstart = 20)                            #
+                                                                                     #
+plot(GC_1_escalado, col = GC_1_Cluster_esc$cluster+1, xlab='ra',ylab='dec',pch=19,   #
+     main= 'k-meas G1 con z-score')                                                  #
+points(GC_1_Cluster_esc$centers, pch=8, col='deeppink', cex=2)                       #
+######################################################################################
+
+
+################################## K-means GC_2 ######################################
+GC_2 <- subset(GC,ra > 180)                                                          #
+dim(GC_2)                                                                            #
+                                                                                     #
+set.seed(20)                                                                         #
+GC_2_Cluster <- kmeans(GC_2, 4, nstart = 20)                                         #
+                                                                                     #
+plot(GC_2, col = GC_2_Cluster$cluster+1, xlab='ra', ylab='dec', pch=19,              #
+     main= 'k-means G2')                                                             #
+points(GC_2_Cluster$centers, pch=8, col='deeppink', cex=2)                           #
+                                                                                     #
+         ################# con escalado z-score ###########################          #
+                                                                                     #
+GC_2_escalado <- scale(GC_2, center = TRUE, scale = TRUE)                            #
+                                                                                     #
+set.seed(20)                                                                         #
+GC_2_Cluster_esc <- kmeans(GC_2_escalado, 4, nstart = 20)                            #
+                                                                                     #
+plot(GC_2_escalado, col = GC_2_Cluster_esc$cluster+1, xlab='ra',ylab='dec',pch=19,   #
+     main= 'k-meas G2 con z-score')                                                  #
+points(GC_2_Cluster_esc$centers, pch=8, col='deeppink', cex=2)                       #
+######################################################################################
+```
+
+En la figura se muestran las cuatro particiones en distintos colores y con asterisco los centros de los mismos.
+
+Lo primero que podemos comentar en este resultado es que se distingue una división entre dos zonas dada por la posición intrínseca de los grupos compactos como se mostró en la figura de "Posición proyectada de GCs".
+
+También es notable como la normalización influye en el resultado de las particiones tanto en el tamaño como en la posición de los centros. Respecto a las particiones observados éstas son posibles agrupaciones en el espacio, para saber si realmente estas agrupaciones son reales se debe analizar con la distancia de cada Grupo Compacto.
+
+
+# Método de Mixtura de Gaussianas.
+
+Este método se implemento con un K fijo dado por el valor resultante en la elección del número de centros en k-meas, la razón es que la instauración de criterios para la elección del número de gaussianas en este método no son fáciles y están poco documentados.
+
+```{r}
+par(lwd=2)			
+par(mar=c(5,5,2,2))             
+par(mfrow=c(2,2))		
+par(mgp=c(3.7,1.3,0))           
+par(cex.axis=1.2,cex.lab=1.3)   
+par(family="serif")		
+
+library(mclust)
+library(VIM)
+read.table("2masscgs.dat") -> D
+GC <- D[c(2,3)]
+ra              <- GC$V2         
+dec             <- GC$V3   
+
+################################## Mix.Gaussiana GC_1 #######################################
+GC_1 <- subset(GC,ra < 180)                                                                 #
+mcl.model <- Mclust(GC_1, 4)                                                                #
+plot(mcl.model, what = "density", type = "image", xlab='ra', ylab='dec',                    #
+     main= 'Mix.Gaussiana G1', col='firebrick')                                             #
+points(GC_1)                                                                                #
+                                                                                            #
+                        ########  ESCALADO CON  Z.SCORE #########                           #
+                                                                                            #
+GC_1 <- subset(GC, ra < 180)                                                                #
+GC_1_escalado <- scale(GC_1, center = TRUE, scale = TRUE)                                   #
+mcl.model <- Mclust(GC_1_escalado, 4)                                                       #
+plot(mcl.model, what = "density", type = "image", xlab='ra', ylab='dec', col='firebrick',   #
+     main= 'Mix.Gaussiana G1 con z-score')                                                  #
+points(GC_1_escalado)                                                                       #
+#############################################################################################
+
+
+################################## Mix.Gaussiana GC_2 #######################################
+                                                                                            #
+GC_2 <- subset(GC, ra > 180)                                                                #
+mcl.model <- Mclust(GC_2, 4)                                                                #
+plot(mcl.model, what = "density", type = "image", col ='darkmagenta', xlab='ra',ylab='dec', #
+     main= 'Mix.Gaussiana G2')                                                              #
+points(GC_2)                                                                                #
+                        ########  ESCALADO CON  Z.SCORE #########                           #
+GC_2 <- subset(GC,ra > 180)                                                                 #
+GC_2_escalado <- scale(GC_2, center = TRUE, scale = TRUE)                                   #
+mcl.model <- Mclust(GC_2_escalado, 4)                                                       #
+plot(mcl.model, what = "density", type = "image", col ='darkmagenta', xlab='ra',ylab='dec', #
+     main= 'Mix.Gaussiana G1 con z-score')                                                  #
+points(GC_2_escalado)                                                                       #
+#############################################################################################
+```
+El gráfico muestra los resultados de aplicar Mixture Model a los grupos GC_1 y GC_2 en primera y segunda fila respectivamente, acompañados de los resultados al usar los datos normalizados por z-score.
+
+En el gráfico anterior al igual que en el gráfico resultante del método de k-means se ve claramente dos zonas de sobredensidades y como se justificó anteriormente es por que el data set usado es un catálogo de las posiciones en ciertas zonas del cielo.
+ 
+
+# Conclusión:
+
+- **Método KNN**
+Podemos concluir que el algoritmo está sujeto a como se ejecutó la ''elección aleatoria'' de las filas del data set (i.e que las muestras de validación y entrenamiento no siguen una real aleatoriedad). Por lo tanto se debe ser consciente de este hecho en la implementación del método a la hora de fijar un criterio en la elección del K óptimo.
+El aprendizaje de KNN depende fuertemente del orden del data set. 
+
+- **k-means y Mixture Model**
+Los resultados obtenidos, en el conjunto de datos sin normalizar no se aprecie “el codo” a diferencia del conjunto de datos normalizado donde se ve claramente un cambio brusco en **k = 4** tanto para GC_1 como para GC_2. 
+
+Lo primero que podemos comentar en este resultado es que se distingue una división entre dos zonas dada por la posición intrínseca de los grupos compactos como se mostró en la figura de "Posición proyectada de GCs".
+
+También es notable como la normalización influye en el resultado de las particiones tanto en el tamaño como en la posición de los centros. Respecto a las particiones observados éstas son posibles agrupaciones en el espacio, para saber si realmente estas agrupaciones son reales se debe analizar con la distancia de cada Grupo Compacto.
+Para nosotros sacar conclusiones de la forma de los grupos y sus detalles fue mas fácil al implementar el método de K-means 

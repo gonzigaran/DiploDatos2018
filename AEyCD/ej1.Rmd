@@ -1,0 +1,61 @@
+---
+title: "Práctico 1"
+author: "Gonzalo Zigarán"
+output: html_notebook
+---
+
+Conjunto de datos de vuelos en Nueva York en 2013.
+
+```{r}
+library(nycflights13)
+fligths<-nycflights13::flights
+fligths
+```
+
+1) Para calcular los vuelos que tienen un retraso de más de 2 horas de arribo vamos a comparar la variable `arr_delay` que mide en minutos el retraso que tuvo el vuelo en arribar.
+
+```{r}
+subset(fligths, arr_delay > 120)
+```
+
+2) Para ver los vuelos que arribaron en Houston vamos a utilizar la variable `dest` que nos devuelve el aeropuerto destino.
+
+```{r}
+subset(fligths, dest == "IAH" | dest == "HOU")
+```
+
+3) Para poder filtrar por operadores, primero tenemos que conocer a que sigla corresponde cada aerolinea. Para eso mostramos el dataset `airlines`.
+
+```{r}
+airlines<-nycflights13::airlines
+airlines
+```
+
+Podemos ver que el código de United Air Lines Inc. es **UA**, el de American Airlines Inc. es **AA** y de Delta Air Lines Inc. es **DL**.
+
+Ahora si filtramos el dataset por estos operadores.
+
+```{r}
+subset(fligths, carrier == "UA" | carrier == "AA" | carrier == "DL")
+```
+
+4) Para poder ver los vuelos que salieron en verano, vamos a comparar la variable `month` y buscar cuando esta sea 7, 8 o 9 (correspondiente a Julio, Agosto y Septiembre).
+
+```{r}
+subset(fligths, month == 7 | month == 8 | month == 9)
+```
+
+
+5) Para ver los vuelos que arribaron más de 2 horas tarde pero salieron bien, vamos a tener que comparar 2 variables: `dep_delay` para ver que el vuelo salió bien, y `arr_delay` para ver que el vuelo arribo tare.
+
+```{r}
+subset(fligths, arr_delay > 120 & dep_delay == 0 )
+```
+
+6) Los vuelos que salieron entre medianoche y las 6 am, se pueden usar las variables `hour` y `minute`, pero también hay que tener en cuenta la demora en salir con la variable `dep_delay`
+
+```{r}
+subset(fligths, 60*hour + minute + dep_delay > 0 & 60*hour + minute + dep_delay < 60*6 )
+```
+
+
